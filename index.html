@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReachyClaw - Reachy Mini App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section class="hero">
+    <div class="topline">
+        <div class="brand">
+            <span class="logo">🤖</span>
+            <span class="brand-name">ReachyClaw</span>
+        </div>
+        <div class="pill">Voice conversation · OpenClaw brain · Full body control</div>
+    </div>
+
+    <div class="hero-grid">
+        <div class="hero-copy">
+            <div class="eyebrow">Reachy Mini App</div>
+            <h1>Your OpenClaw agent, embodied.</h1>
+            <p class="lede">
+                Give your OpenClaw AI agent a Reachy Mini robot body.
+                OpenClaw is the brain — it controls what the robot says,
+                how it moves, and what it sees. OpenAI Realtime API handles voice I/O.
+            </p>
+            <div class="hero-actions">
+                <a href="#simulator" class="btn primary">🖥️ Try with Simulator</a>
+                <a href="#features" class="btn ghost">See features</a>
+            </div>
+            <div class="hero-badges">
+                <span>🧠 OpenClaw brain</span>
+                <span>🎙️ OpenAI Realtime voice</span>
+                <span>💃 Full body control</span>
+                <span>🖥️ No robot required!</span>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="glass-card">
+                <img src="https://huggingface.co/spaces/pollen-robotics/reachy_mini_conversation_app/resolve/main/docs/assets/reachy_mini_dance.gif"
+                     alt="Reachy Mini Robot Dancing"
+                     class="hero-gif">
+                <p class="caption">Works with physical robot OR MuJoCo simulator!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section simulator-callout" id="simulator">
+    <div class="story-card highlight">
+        <h2>🖥️ No Robot? No Problem!</h2>
+        <p class="story-text" style="font-size: 1.1rem;">
+            <strong>You don't need a physical Reachy Mini robot to use ReachyClaw!</strong><br><br>
+            ReachyClaw works with the Reachy Mini Simulator, a MuJoCo-based physics simulation
+            that runs on your computer. Watch your agent move and express emotions on screen
+            while you talk.
+        </p>
+        <div class="architecture-preview" style="margin: 1.5rem 0;">
+<pre>
+# Install simulator support
+pip install "reachy-mini[mujoco]"
+
+# Start the simulator (opens 3D window)
+reachy-mini-daemon --sim
+
+# In another terminal, run ReachyClaw
+reachyclaw --gradio
+</pre>
+        </div>
+        <p class="caption">🍎 Mac Users: Use <code>mjpython -m reachy_mini.daemon.app.main --sim</code> instead</p>
+        <a href="https://huggingface.co/docs/reachy_mini/platforms/simulation/get_started" class="btn primary" style="margin-top: 1rem;" target="_blank">
+            📚 Simulator Setup Guide
+        </a>
+    </div>
+</section>
+
+<section class="section" id="features">
+    <div class="section-header">
+        <h2>What's inside</h2>
+        <p class="intro">
+            ReachyClaw makes OpenClaw the actual brain — every message, every movement, every decision.
+        </p>
+    </div>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="icon">🧠</div>
+            <h3>OpenClaw is the brain</h3>
+            <p>Every user message goes through your OpenClaw agent. No GPT-4o guessing — real responses with full tool access.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🎤</div>
+            <h3>Real-time voice</h3>
+            <p>OpenAI Realtime API for low-latency speech-to-text and text-to-speech. Voice I/O only — no GPT-4o brain.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🤖</div>
+            <h3>Full body control</h3>
+            <p>OpenClaw controls the robot body via action tags — head movement, emotions, dances, camera, face tracking.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">👀</div>
+            <h3>Vision</h3>
+            <p>See through the robot's camera. Your agent can look around and describe what it sees.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🖥️</div>
+            <h3>Simulator support</h3>
+            <p>No robot? Run with MuJoCo simulator and watch your agent move in a 3D window.</p>
+        </div>
+        <div class="feature-card">
+            <div class="icon">⚡</div>
+            <h3>Instant startup</h3>
+            <p>No 30-second context fetch. GPT-4o is just a relay — the session starts immediately.</p>
+        </div>
+    </div>
+</section>
+
+<section class="section story" id="how-it-works">
+    <div class="story-grid">
+        <div class="story-card">
+            <h3>How it works</h3>
+            <p class="story-text">OpenClaw controls everything</p>
+            <ol class="story-list">
+                <li><span>🎤</span> Robot captures your voice</li>
+                <li><span>📝</span> OpenAI Realtime transcribes your speech</li>
+                <li><span>🧠</span> Your message goes to OpenClaw (the real brain)</li>
+                <li><span>🤖</span> OpenClaw responds with text + action tags like [EMOTION:happy]</li>
+                <li><span>💃</span> ReachyClaw executes the actions on the robot</li>
+                <li><span>🔊</span> Clean text goes to TTS — robot speaks while moving</li>
+            </ol>
+        </div>
+        <div class="story-card secondary">
+            <h3>Prerequisites</h3>
+            <p class="story-text">Choose your setup:</p>
+            <div class="chips">
+                <span class="chip">🧠 OpenClaw Gateway</span>
+                <span class="chip">🔑 OpenAI API Key</span>
+                <span class="chip">🐍 Python 3.11+</span>
+            </div>
+            <p class="story-text" style="margin-top: 1rem;">
+                <strong>Option A:</strong> 🤖 Physical Reachy Mini robot<br>
+                <strong>Option B:</strong> 🖥️ MuJoCo Simulator (free, no hardware!)
+            </p>
+            <a href="https://github.com/shaunx/reachyclaw#readme" class="btn ghost wide" style="margin-top: 1rem;">
+                View installation guide
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <h2>Quick start</h2>
+        <p class="intro">Get ReachyClaw running with the simulator</p>
+    </div>
+    <div class="story-card">
+        <div class="architecture-preview">
+<pre>
+# Clone ReachyClaw
+git clone https://github.com/shaunx/reachyclaw
+cd reachyclaw
+
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate
+
+# Install ReachyClaw + simulator
+pip install -e .
+pip install "reachy-mini[mujoco]"
+
+# Configure (edit with your OpenClaw URL and OpenAI key)
+cp .env.example .env
+nano .env
+
+# Terminal 1: Start simulator
+reachy-mini-daemon --sim
+
+# Terminal 2: Run ReachyClaw
+reachyclaw --gradio
+</pre>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <p>
+        ReachyClaw — your OpenClaw agent, embodied in Reachy Mini.<br>
+        <strong>Works with physical robot OR simulator!</strong><br><br>
+        Learn more about <a href="https://github.com/openclaw/openclaw">OpenClaw</a>,
+        <a href="https://github.com/pollen-robotics/reachy_mini">Reachy Mini</a>, and
+        <a href="https://huggingface.co/docs/reachy_mini/platforms/simulation/get_started">the Simulator</a>.
+    </p>
+</footer>
+
+</body>
+</html>
