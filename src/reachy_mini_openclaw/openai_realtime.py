@@ -1,15 +1,12 @@
-"""ReachyClaw - OpenAI Realtime API handler with OpenClaw identity.
-
-This module implements ReachyClaw's voice conversation system using OpenAI Realtime API
-with the robot embodying the actual OpenClaw agent's personality and context.
+"""ReachyClaw - OpenAI Realtime API handler as voice relay for OpenClaw.
 
 Architecture:
-    Startup: Fetch OpenClaw agent context (personality, memories, user info)
-    Runtime: User speaks -> OpenAI Realtime (as OpenClaw agent) -> Robot speaks
-             -> Tools for movements + OpenClaw queries for extended capabilities
-             -> Conversations synced back to OpenClaw for memory continuity
+    Runtime: User speaks -> GPT-4o (voice relay) -> ask_openclaw -> OpenClaw responds
+             -> Action tags parsed & dispatched locally -> Clean text spoken via TTS
 
-The robot IS the OpenClaw agent - same personality, same memories, same context.
+GPT-4o is a dumb relay: it calls ask_openclaw for every user message and speaks
+the result verbatim. OpenClaw is the brain — it controls personality, memory,
+and robot body actions via inline tags like [EMOTION:happy] and [DANCE:wave].
 """
 
 import json
@@ -29,7 +26,7 @@ from websockets.exceptions import ConnectionClosedError
 
 from reachy_mini_openclaw.config import config
 from reachy_mini_openclaw.prompts import get_session_voice
-from reachy_mini_openclaw.tools.core_tools import ToolDependencies, get_tool_specs, dispatch_tool_call, get_body_actions_description
+from reachy_mini_openclaw.tools.core_tools import ToolDependencies, dispatch_tool_call, get_body_actions_description
 
 logger = logging.getLogger(__name__)
 
@@ -38,28 +35,22 @@ OPENAI_SAMPLE_RATE: Final[Literal[24000]] = 24000
 
 # Base instructions for the robot body capabilities
 ROBOT_BODY_INSTRUCTIONS = """
-## CRITICAL: You are a voice relay for the OpenClaw agent
+## CRITICAL: You are a voice relay — NOTHING ELSE
 
 You are the voice interface for an OpenClaw AI agent embodied in a Reachy Mini robot.
-You MUST call `ask_openclaw` for EVERY user message to get the real response.
 
-**Your ONLY job is:**
-1. When the user says something, IMMEDIATELY call `ask_openclaw` with their full message.
-2. Speak the response from `ask_openclaw` EXACTLY as returned — do not rephrase, add to, or summarize it.
+**Your ONLY permitted action is:**
+1. When the user says something, IMMEDIATELY call `ask_openclaw` with their FULL message.
+2. When `ask_openclaw` returns, speak the response EXACTLY as returned — word for word.
+3. That's it. Do nothing else. Ever.
 
-**You MUST NOT:**
-- Answer any question yourself — ALWAYS use `ask_openclaw` first.
-- Make up information, opinions, or responses on your own.
-- Summarize or modify what `ask_openclaw` returns — speak it verbatim.
-- Say things like "let me check" and then answer without calling `ask_openclaw`.
-
-**Robot Movement:**
-- Do NOT call look, emotion, dance, or camera tools yourself.
-- OpenClaw controls the robot body — movements are handled automatically from its response.
-
-**Conversation Style for Voice:**
-- Keep it natural — you are speaking out loud
-- If ask_openclaw is slow or errors, say "I'm having trouble reaching my brain, one moment"
+**ABSOLUTE RULES — zero exceptions:**
+- NEVER generate ANY text without first receiving a response from `ask_openclaw`.
+- NEVER answer a question, make small talk, or produce filler like "one moment" on your own.
+- NEVER rephrase, summarize, or add to what `ask_openclaw` returns.
+- If `ask_openclaw` is slow, WAIT SILENTLY. Do NOT speak until you have the result.
+- If `ask_openclaw` errors, call it again. Do NOT speak an error message yourself.
+- You have NO knowledge, NO opinions, NO personality. You are a microphone and speaker.
 """
 
 # Fallback if OpenClaw context fetch fails
@@ -87,14 +78,10 @@ Use actions naturally to make the conversation more expressive. You don't have t
 
 
 class OpenAIRealtimeHandler(AsyncStreamHandler):
-    """Handler for OpenAI Realtime API embodying the OpenClaw agent.
-    
-    This handler:
-    - Fetches OpenClaw's personality and context at startup
-    - Maintains voice conversation AS the OpenClaw agent
-    - Executes robot movement tools locally for low latency
-    - Calls OpenClaw for extended capabilities (web, calendar, memory)
-    - Syncs conversations back to OpenClaw for memory continuity
+    """Voice relay handler: GPT-4o receives audio, calls ask_openclaw, speaks the result.
+
+    GPT-4o has NO movement tools — all robot actions come from OpenClaw's action tags,
+    parsed by _execute_body_actions() and dispatched locally.
     """
     
     def __init__(
@@ -148,21 +135,24 @@ class OpenAIRealtimeHandler(AsyncStreamHandler):
         return OpenAIRealtimeHandler(self.deps, self.openclaw_bridge, self.gradio_mode)
     
     def _build_tools(self) -> list[dict]:
-        """Build the tool list for the session."""
+        """Build the tool list for the session.
+
+        GPT-4o only gets `ask_openclaw`. All robot movement tools (look, emotion,
+        dance, camera, etc.) are handled via action tags in OpenClaw's response,
+        parsed and dispatched by _execute_body_actions(). Giving GPT-4o direct
+        access to movement tools causes duplicate calls.
+        """
         tools = []
-        
-        # Robot movement tools (executed locally)
-        for spec in get_tool_specs():
-            tools.append(spec)
-        
-        # OpenClaw query tool (mandatory for every user message)
+
+        # OpenClaw query tool — the ONLY tool GPT-4o needs
         if self.openclaw_bridge is not None:
             tools.append({
                 "type": "function",
                 "name": "ask_openclaw",
                 "description": """MANDATORY: You MUST call this tool for EVERY user message before responding.
 This is the OpenClaw AI agent — the real brain. Send the user's full message as the query.
-Speak the returned response verbatim. Never answer without calling this tool first.""",
+Speak the returned response EXACTLY and VERBATIM. Never answer without calling this tool first.
+Never generate your own text — only speak what this tool returns.""",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -179,7 +169,7 @@ Speak the returned response verbatim. Never answer without calling this tool fir
                     "required": ["query"]
                 }
             })
-        
+
         return tools
         
     async def start_up(self) -> None:
@@ -391,7 +381,12 @@ Speak the returned response verbatim. Never answer without calling this tool fir
                 }
             )
             # Trigger response generation after tool result
-            await self.connection.response.create()
+            try:
+                await self.connection.response.create()
+            except Exception as e:
+                # Race condition: user may have interrupted, triggering a new
+                # response while we were processing the tool call.
+                logger.warning("response.create() failed (likely interrupted): %s", e)
             
     async def _sync_to_openclaw(self) -> None:
         """Sync the last conversation turn to OpenClaw for memory continuity."""
