@@ -48,7 +48,7 @@ You speak -> Reachy Mini microphone
 ## Installation
 
 ```bash
-git clone https://github.com/shaunx/reachyclaw
+git clone https://github.com/EdLuxAI/reachyclaw
 cd reachyclaw
 pip install -e .
 ```
@@ -100,7 +100,7 @@ OpenClaw can include these action tags in its responses:
 
 ## Links
 
-- [GitHub Repository](https://github.com/shaunx/reachyclaw)
+- [GitHub Repository](https://github.com/EdLuxAI/reachyclaw)
 - [Reachy Mini SDK](https://github.com/pollen-robotics/reachy_mini)
 - [OpenClaw Documentation](https://docs.openclaw.ai)
 

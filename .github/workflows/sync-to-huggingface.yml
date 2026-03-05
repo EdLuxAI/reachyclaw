@@ -19,5 +19,5 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git remote add huggingface https://huggingface:$HF_TOKEN@huggingface.co/spaces/shaunx/reachyclaw
+          git remote add huggingface https://huggingface:$HF_TOKEN@huggingface.co/spaces/EdLuxAI/reachyclaw
           git push huggingface main --force

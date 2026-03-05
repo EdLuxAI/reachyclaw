@@ -97,10 +97,10 @@ reachyclaw = "reachy_mini_openclaw.main:main"
 reachyclaw = "reachy_mini_openclaw.main:ReachyClawApp"
 
 [project.urls]
-Homepage = "https://github.com/shaunx/reachyclaw"
-Documentation = "https://github.com/shaunx/reachyclaw#readme"
-Repository = "https://github.com/shaunx/reachyclaw"
-Issues = "https://github.com/shaunx/reachyclaw/issues"
+Homepage = "https://github.com/EdLuxAI/reachyclaw"
+Documentation = "https://github.com/EdLuxAI/reachyclaw#readme"
+Repository = "https://github.com/EdLuxAI/reachyclaw"
+Issues = "https://github.com/EdLuxAI/reachyclaw/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

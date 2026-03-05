@@ -88,7 +88,7 @@ OpenClaw can use these action tags in responses:
 
 ```bash
 # Clone ReachyClaw
-git clone https://github.com/shaunx/reachyclaw
+git clone https://github.com/EdLuxAI/reachyclaw
 cd reachyclaw
 
 # Create virtual environment
