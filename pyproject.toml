@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reachyclaw"
-version = "0.1.0"
+version = "0.1.1"
 description = "ReachyClaw - Give your OpenClaw AI agent a physical robot body with Reachy Mini. OpenClaw is the brain; OpenAI Realtime API handles voice I/O."
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -50,11 +50,10 @@ dependencies = [
 
     # Environment
     "python-dotenv",
-]
 
-# Note: reachy-mini SDK must be installed separately from the robot or GitHub:
-# pip install git+https://github.com/pollen-robotics/reachy_mini.git
-# Or on the robot, it's pre-installed.
+    # Reachy Mini robot SDK
+    "reachy_mini>=1.5.0",
+]
 
 [project.optional-dependencies]
 wireless = [
