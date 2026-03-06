@@ -505,11 +505,11 @@ class ReachyClawCore:
 
 class ReachyClawApp:
     """ReachyClaw - Reachy Mini Apps entry point.
-    
+
     This class allows ReachyClaw to be installed and run from
     the Reachy Mini dashboard as a Reachy Mini App.
     """
-    
+
     # No custom settings UI
     custom_app_url: Optional[str] = None
     

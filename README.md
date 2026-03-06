@@ -86,6 +86,31 @@ OpenClaw can use these action tags in responses:
 
 ## Installation
 
+### From the Reachy Mini App Store (recommended)
+
+Install ReachyClaw directly from the Reachy Mini Control app. After installation, you must create a `.env` config file inside the app's venv so it can connect to OpenAI and your OpenClaw gateway.
+
+The file goes here (on macOS):
+
+```
+/Applications/Reachy Mini Control.app/Contents/Resources/reachyclaw_venv/lib/python3.12/.env
+```
+
+Create it with:
+
+```bash
+cat > "/Applications/Reachy Mini Control.app/Contents/Resources/reachyclaw_venv/lib/python3.12/.env" << EOF
+OPENAI_API_KEY=sk-...your-key...
+OPENCLAW_GATEWAY_URL=ws://localhost:18789
+OPENCLAW_TOKEN=your-gateway-token
+OPENCLAW_AGENT_ID=main
+EOF
+```
+
+That's it — launch ReachyClaw from the app and it will work.
+
+### From Source (CLI / development)
+
 ```bash
 # Clone ReachyClaw
 git clone https://github.com/EdLuxAI/reachyclaw
@@ -112,7 +137,7 @@ Edit `.env`:
 OPENAI_API_KEY=sk-...your-key...
 
 # OpenClaw Gateway (required)
-OPENCLAW_GATEWAY_URL=http://localhost:18789
+OPENCLAW_GATEWAY_URL=ws://localhost:18789
 OPENCLAW_TOKEN=your-gateway-token
 OPENCLAW_AGENT_ID=main
 
