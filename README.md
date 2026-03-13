@@ -93,19 +93,25 @@ Install ReachyClaw directly from the Reachy Mini Control app. After installation
 The file goes here (on macOS):
 
 ```
-/Applications/Reachy Mini Control.app/Contents/Resources/reachyclaw_venv/lib/python3.12/.env
+~/Library/Application Support/com.pollen-robotics.reachy-mini/reachyclaw_venv/lib/python3.12/.env
 ```
 
 Create it with:
 
 ```bash
-cat > "/Applications/Reachy Mini Control.app/Contents/Resources/reachyclaw_venv/lib/python3.12/.env" << EOF
+cat > ~/Library/Application\ Support/com.pollen-robotics.reachy-mini/reachyclaw_venv/lib/python3.12/.env << EOF
 OPENAI_API_KEY=sk-...your-key...
 OPENCLAW_GATEWAY_URL=ws://localhost:18789
 OPENCLAW_TOKEN=your-gateway-token
 OPENCLAW_AGENT_ID=main
 EOF
 ```
+
+**Where to find these values:**
+
+- **`OPENAI_API_KEY`** — from [platform.openai.com/api-keys](https://platform.openai.com/api-keys). If you already have the Conversation app installed, you can copy the key from its `.env` file (same parent directory, under `conversation_venv`).
+- **`OPENCLAW_TOKEN`** — your gateway auth token, found in `~/.openclaw/openclaw.json` under `gateway.auth.token`.
+- **`OPENCLAW_GATEWAY_URL`** — defaults to `ws://localhost:18789` if OpenClaw runs on the same machine.
 
 That's it — launch ReachyClaw from the app and it will work.
 
@@ -130,7 +136,7 @@ cp .env.example .env
 
 ## Configuration
 
-Edit `.env`:
+Edit `.env` (see `.env.example` for all options):
 
 ```bash
 # Required
@@ -138,7 +144,7 @@ OPENAI_API_KEY=sk-...your-key...
 
 # OpenClaw Gateway (required)
 OPENCLAW_GATEWAY_URL=ws://localhost:18789
-OPENCLAW_TOKEN=your-gateway-token
+OPENCLAW_TOKEN=your-gateway-token       # from ~/.openclaw/openclaw.json → gateway.auth.token
 OPENCLAW_AGENT_ID=main
 
 # Optional
